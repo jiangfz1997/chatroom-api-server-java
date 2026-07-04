@@ -1,0 +1,53 @@
+package com.chatroom.controller;
+
+import com.chatroom.exception.UnauthorizedException;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.Map;
+
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    /**
+     * Handles business logic errors such as duplicate username or wrong password.
+     * Returns 400 with the error message.
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<?> handleBusiness(IllegalArgumentException e) {
+        return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+    }
+
+    /**
+     * Handles @Valid validation failures (blank fields, format errors etc.).
+     * Returns 400 with the first validation error message.
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> handleValidation(MethodArgumentNotValidException e) {
+        String message = e.getBindingResult()
+                .getFieldErrors()
+                .get(0)
+                .getDefaultMessage();
+        return ResponseEntity.badRequest().body(Map.of("error", message));
+    }
+
+    /**
+     * Catches all unexpected exceptions and returns a generic 500 response.
+     * Prevents internal error details from leaking to the client.
+     */
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleUnexpected(Exception e) {
+        return ResponseEntity.internalServerError().body(Map.of("error", "internal server error"));
+    }
+
+    /**
+     * Handles authentication failures such as wrong password or unknown user.
+     * Returns 401 Unauthorized.
+     */
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<?> handleUnauthorized(UnauthorizedException e) {
+        return ResponseEntity.status(401).body(Map.of("error", e.getMessage()));
+    }
+}
