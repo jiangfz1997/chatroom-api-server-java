@@ -12,7 +12,9 @@ import java.util.List;
 public class Chatroom {
     private String roomId;
     private String roomName;
+    private boolean isPrivate;
     private String createdBy;
+    private String createdAt;
     private List<String> members;
 
 }

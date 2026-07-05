@@ -1,5 +1,6 @@
 package com.chatroom.controller;
 
+import com.chatroom.exception.NotFoundException;
 import com.chatroom.exception.UnauthorizedException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -49,5 +50,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<?> handleUnauthorized(UnauthorizedException e) {
         return ResponseEntity.status(401).body(Map.of("error", e.getMessage()));
+    }
+
+    /**
+     * Handles resource-not-found errors such as a missing chatroom.
+     * Returns 404 Not Found.
+     */
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<?> handleNotFound(NotFoundException e) {
+        return ResponseEntity.status(404).body(Map.of("error", e.getMessage()));
     }
 }
