@@ -35,7 +35,7 @@ public class DynamoDbConfig {
                         // Static credentials are only for local development.
                         // Production should use DefaultCredentialsProvider (IAM roles).
                         StaticCredentialsProvider.create(
-                                AwsBasicCredentials.create("dummy", "dummy")
+                                AwsBasicCredentials.create("fakeMyKeyId", "fakeSecretAccessKey")
                         )
                 )
                 .build();

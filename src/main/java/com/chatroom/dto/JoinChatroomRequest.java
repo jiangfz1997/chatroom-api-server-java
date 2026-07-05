@@ -1,11 +1,13 @@
 package com.chatroom.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
 public class JoinChatroomRequest {
 
-    @NotBlank(message = "chatroomId is required")
+    @JsonProperty("chatroom_id")
+    @NotBlank(message = "chatroom_id is required")
     private String chatroomId;
 }

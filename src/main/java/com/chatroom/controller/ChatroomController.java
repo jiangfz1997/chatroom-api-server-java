@@ -63,10 +63,16 @@ public class ChatroomController {
         return ResponseEntity.ok(Map.of("message", "Exited chatroom successfully"));
     }
 
-    // GET /api/chatrooms
+    // GET /api/chatrooms  (returns { rooms: [...] })
     @GetMapping
-    public ResponseEntity<List<Chatroom>> getUserChatrooms(Authentication auth) {
-        return ResponseEntity.ok(chatroomService.getUserChatrooms(auth.getName()));
+    public ResponseEntity<?> getUserChatrooms(Authentication auth) {
+        return ResponseEntity.ok(Map.of("rooms", chatroomService.getUserChatrooms(auth.getName())));
+    }
+
+    // GET /api/chatrooms/user/{username}  (frontend compatibility — same as GET /api/chatrooms)
+    @GetMapping("/user/{username}")
+    public ResponseEntity<?> getUserChatroomsByPath(Authentication auth) {
+        return ResponseEntity.ok(Map.of("rooms", chatroomService.getUserChatrooms(auth.getName())));
     }
 
     // GET /api/chatrooms/{roomId}

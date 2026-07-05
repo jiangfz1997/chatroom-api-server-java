@@ -12,6 +12,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Set;
 
 /**
  * Runs once per request. Reads the Bearer token from the Authorization header,
@@ -24,10 +25,19 @@ import java.util.Collections;
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
+    private static final Set<String> PUBLIC_PATHS = Set.of(
+            "/api/register", "/api/login", "/api/health"
+    );
+
     private final JwtUtil jwtUtil;
 
     public JwtAuthFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        return PUBLIC_PATHS.contains(request.getServletPath());
     }
 
     @Override
