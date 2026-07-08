@@ -2,6 +2,7 @@ package com.chatroom.controller;
 
 import com.chatroom.exception.NotFoundException;
 import com.chatroom.exception.UnauthorizedException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Map;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -18,6 +20,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<?> handleBusiness(IllegalArgumentException e) {
+        log.warn("Business rule rejection: {}", e.getMessage());
         return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
     }
 
@@ -31,6 +34,7 @@ public class GlobalExceptionHandler {
                 .getFieldErrors()
                 .get(0)
                 .getDefaultMessage();
+        log.warn("Validation failed: {}", message);
         return ResponseEntity.badRequest().body(Map.of("error", message));
     }
 
@@ -40,6 +44,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleUnexpected(Exception e) {
+        log.error("Unexpected error handling request", e);
         return ResponseEntity.internalServerError().body(Map.of("error", "internal server error"));
     }
 
@@ -49,6 +54,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<?> handleUnauthorized(UnauthorizedException e) {
+        log.warn("Unauthorized: {}", e.getMessage());
         return ResponseEntity.status(401).body(Map.of("error", e.getMessage()));
     }
 
@@ -58,6 +64,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<?> handleNotFound(NotFoundException e) {
+        log.warn("Not found: {}", e.getMessage());
         return ResponseEntity.status(404).body(Map.of("error", e.getMessage()));
     }
 }
