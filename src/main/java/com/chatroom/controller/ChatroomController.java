@@ -8,6 +8,7 @@ import com.chatroom.model.Message;
 import com.chatroom.repository.MessageRepository;
 import com.chatroom.service.ChatroomService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -17,6 +18,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/chatrooms")
 public class ChatroomController {
@@ -39,6 +41,7 @@ public class ChatroomController {
             Authentication auth,
             @Valid @RequestBody CreateChatroomRequest req) {
 
+        log.info("Create chatroom request: name=[{}] by=[{}]", req.getName(), auth.getName());
         Chatroom chatroom = chatroomService.createChatroom(auth.getName(), req);
         return ResponseEntity.ok(chatroom);
     }
@@ -49,6 +52,7 @@ public class ChatroomController {
             Authentication auth,
             @Valid @RequestBody JoinChatroomRequest req) {
 
+        log.info("Join chatroom request: room=[{}] by=[{}]", req.getChatroomId(), auth.getName());
         chatroomService.joinChatroom(auth.getName(), req.getChatroomId());
         return ResponseEntity.ok(Map.of("message", "Joined chatroom successfully"));
     }
@@ -59,6 +63,7 @@ public class ChatroomController {
             Authentication auth,
             @Valid @RequestBody ExitChatroomRequest req) {
 
+        log.info("Exit chatroom request: room=[{}] by=[{}]", req.getChatroomId(), auth.getName());
         chatroomService.exitChatroom(auth.getName(), req.getChatroomId());
         return ResponseEntity.ok(Map.of("message", "Exited chatroom successfully"));
     }

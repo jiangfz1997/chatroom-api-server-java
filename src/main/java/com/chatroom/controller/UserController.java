@@ -4,11 +4,13 @@ import com.chatroom.dto.LoginRequest;
 import com.chatroom.dto.RegisterRequest;
 import com.chatroom.service.UserService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/api")
 public class UserController {
@@ -25,6 +27,7 @@ public class UserController {
      */
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest req) {
+        log.info("Register attempt: username=[{}]", req.getUsername());
         userService.register(req);
         return ResponseEntity.ok(Map.of("message", "sign up successfully"));
     }
@@ -35,6 +38,7 @@ public class UserController {
      */
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest req) {
+        log.info("Login attempt: username=[{}]", req.getUsername());
         String token = userService.login(req);
         return ResponseEntity.ok(Map.of(
                 "message", "login success",

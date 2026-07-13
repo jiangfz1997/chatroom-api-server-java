@@ -6,6 +6,7 @@ import com.chatroom.exception.UnauthorizedException;
 import com.chatroom.model.User;
 import com.chatroom.repository.UserRepository;
 import com.chatroom.util.JwtUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.dynamodb.model.ConditionalCheckFailedException;
@@ -13,6 +14,7 @@ import software.amazon.awssdk.services.dynamodb.model.ConditionalCheckFailedExce
 import java.time.Duration;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class UserService {
     private final UserRepository userRepository;
@@ -35,6 +37,7 @@ public class UserService {
     public void register(RegisterRequest req) {
         try {
             userRepository.createUser(new User(req.getUsername(), req.getPassword()));
+            log.info("User registered: username=[{}]", req.getUsername());
         } catch (ConditionalCheckFailedException e) {
             // DynamoDB condition "attribute_not_exists(username)" failed —
             // the username is already taken
@@ -69,6 +72,7 @@ public class UserService {
                 Duration.ofHours(24)
         );
 
+        log.info("User logged in: username=[{}]", req.getUsername());
         return token;
     }
 

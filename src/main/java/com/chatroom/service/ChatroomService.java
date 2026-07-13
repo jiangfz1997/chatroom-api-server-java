@@ -4,6 +4,7 @@ import com.chatroom.dto.CreateChatroomRequest;
 import com.chatroom.exception.NotFoundException;
 import com.chatroom.model.Chatroom;
 import com.chatroom.repository.ChatroomRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class ChatroomService {
 
@@ -35,6 +37,7 @@ public class ChatroomService {
         );
 
         chatroomRepository.createChatroom(chatroom);
+        log.info("Chatroom created: room=[{}] by=[{}]", chatroom.getRoomId(), createdBy);
         return chatroom;
     }
 
@@ -52,6 +55,7 @@ public class ChatroomService {
         }
 
         chatroomRepository.addUserToRoom(roomId, username);
+        log.info("User joined chatroom: room=[{}] user=[{}]", roomId, username);
     }
 
     /**
@@ -63,6 +67,7 @@ public class ChatroomService {
                 .orElseThrow(() -> new NotFoundException("Chatroom not found"));
 
         chatroomRepository.removeUserFromRoom(roomId, username);
+        log.info("User exited chatroom: room=[{}] user=[{}]", roomId, username);
     }
 
     /** Returns all chatrooms the user belongs to. */
